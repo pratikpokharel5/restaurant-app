@@ -1,0 +1,31 @@
+<?php
+
+namespace Database\Factories;
+
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+use App\Models\Menu;
+use App\Models\Order;
+use App\Models\OrderItem;
+
+/**
+ * @extends Factory<OrderItem>
+ */
+class OrderItemFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'order_id' => fn() => Order::inRandomOrder()->first()?->id ?? Order::factory(),
+            'menu_id' => fn() => Menu::inRandomOrder()->first()?->id ?? Menu::factory(),
+            'quantity' => fake()->numberBetween(1, 5),
+            'unit_price' => fake()->randomFloat(2, 5, 100),
+        ];
+    }
+}
