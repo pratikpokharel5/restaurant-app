@@ -19,10 +19,10 @@ class MenuFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->words(3, true),
-            'description' => fake()->sentence(),
-            'price' => fake()->randomFloat(2, 5, 100),
-            'is_available' => fake()->boolean(80),
+            'name' => $this->faker->unique()->words(3, true),
+            'description' => $this->faker->sentence(),
+            'price' => $this->faker->randomFloat(2, 5, 100),
+            'is_available' => $this->faker->boolean(80),
             'category_id' => fn () => Category::inRandomOrder()->first()?->id ?? Category::factory(),
         ];
     }

@@ -18,8 +18,8 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->words(2, true),
-            'description' => fake()->boolean(80) ? fake()->sentence() : null,
+            'name' => $this->faker->unique()->words(2, true),
+            'description' => $this->faker->boolean(80) ? $this->faker->sentence() : null,
         ];
     }
 }

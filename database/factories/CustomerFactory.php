@@ -21,10 +21,10 @@ class CustomerFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->boolean(80) ? fake()->unique()->safeEmail() : null,
-            'phone' => fake()->unique()->phoneNumber(),
-            'address' => fake()->boolean(80) ? fake()->address() : null,
+            'name' => $this->faker->name(),
+            'email' => $this->faker->boolean(80) ? $this->faker->unique()->safeEmail() : null,
+            'phone' => $this->faker->unique()->phoneNumber(),
+            'address' => $this->faker->boolean(80) ? $this->faker->address() : null,
             'user_role' => 'customer',
             'password' => static::$password ??= Hash::make('password'),
         ];
