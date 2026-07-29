@@ -1,11 +1,5 @@
 @php
-    $orderStatus = [
-        'pending' => 'Pending',
-        'preparing' => 'Preparing',
-        'on_the_way' => 'On the Way',
-        'delivered' => 'Delivered',
-        'cancelled' => 'Cancelled',
-    ];
+    $orderStatus = \App\Models\Order::statusLabels();
 @endphp
 
 @extends('app')
@@ -13,8 +7,11 @@
 @section('title', 'Orders')
 
 @section('content')
-    <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-md">
-        <h3 class="text-2xl font-bold">Orders</h3>
+    <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-950">Orders</h1>
+            <p class="mt-1 text-sm text-slate-500">Track preparation, delivery flow, and customer details.</p>
+        </div>
 
         <x-datatable class="mt-3" search="{{ request('search') }}" search-placeholder="Search customer..." :pagination="$orders">
             <x-slot:filters>
@@ -30,65 +27,56 @@
             </x-slot:filters>
 
             <x-slot:header>
-                <th class="border border-gray-300 bg-gray-100 p-4">Customer Name</th>
-                <th class="border border-gray-300 bg-gray-100 p-4">Order Items</th>
-                <th class="border border-gray-300 bg-gray-100 p-4">Order Status</th>
-                <th class="border border-gray-300 bg-gray-100 p-4">Actions</th>
+                <th class="px-4 py-3 font-semibold">Order</th>
+                <th class="px-4 py-3 font-semibold">Items</th>
+                <th class="px-4 py-3 font-semibold">Total</th>
+                <th class="px-4 py-3 font-semibold">Status</th>
+                <th class="px-4 py-3 font-semibold">Actions</th>
             </x-slot:header>
 
             @foreach ($orders as $order)
-                <tr>
-                    <td class="border border-gray-300 p-4">{{ $order->customer->name }}</td>
-
-                    <td class="border border-gray-300 p-4">
-                        <table class="w-full rounded-md border border-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr class="text-left">
-                                    <th class="p-2 font-medium">Menu Item</th>
-                                    <th class="p-2 font-medium">Qty</th>
-                                    <th class="p-2 font-medium">Price</th>
-                                    <th class="p-2 font-medium">Total</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach ($order->items as $item)
-                                    <tr>
-                                        <td class="border-t border-gray-200 p-2">{{ $item->menu->name }}</td>
-                                        <td class="border-t border-gray-200 p-2">{{ $item->quantity }}</td>
-                                        <td class="border-t border-gray-200 p-2">{{ $item->unit_price }}</td>
-                                        <td class="border-t border-gray-200 p-2">
-                                            {{ number_format($item->quantity * $item->unit_price, 2) }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-
-                                <tr>
-                                    <td colspan="3" class="border-t border-gray-200 p-2 font-semibold">Total</td>
-                                    <td class="border-t border-gray-200 p-2 font-semibold">
-                                        {{ number_format($order->items->sum(fn($item) => $item->quantity * $item->unit_price), 2) }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-4">
+                        <div class="font-semibold text-slate-950">#{{ $order->id }}</div>
+                        <div class="mt-1 text-sm text-slate-600">{{ $order->customer->name }}</div>
+                        <div class="mt-1 text-xs text-slate-500">{{ $order->created_at->format('M j, Y g:i A') }}</div>
                     </td>
 
-                    <td class="border border-gray-300 p-4">
+                    <td class="px-4 py-4">
+                        <div class="max-w-md space-y-1">
+                            @foreach ($order->items->take(3) as $item)
+                                <div class="flex justify-between gap-4 text-sm">
+                                    <span
+                                        class="truncate text-slate-700">{{ $item->menu->name ?? 'Archived menu item' }}</span>
+                                    <span class="shrink-0 text-slate-500">x{{ $item->quantity }}</span>
+                                </div>
+                            @endforeach
+
+                            @if ($order->items_count > 3)
+                                <div class="text-xs font-medium text-slate-500">+{{ $order->items_count - 3 }} more items
+                                </div>
+                            @endif
+                        </div>
+                    </td>
+
+                    <td class="px-4 py-4 font-semibold text-slate-950">{{ number_format($order->total_price, 2) }}</td>
+
+                    <td class="px-4 py-4">
                         <x-orderstatus :status="$order->status" />
                     </td>
 
-                    <td class="border border-gray-300 p-4">
-                        <a href="{{ route('orders.edit', $order) }}" class="block text-blue-600 hover:underline">
+                    <td class="px-4 py-4">
+                        <a href="{{ route('orders.edit', $order) }}" class="block text-blue-600 hover:text-blue-800">
                             View Order
                         </a>
 
                         <a href="{{ route('customers.show', $order->customer_id) }}"
-                            class="mt-2 block text-blue-600 hover:underline">
+                            class="mt-3 block text-blue-600 hover:text-blue-800">
                             View Customer
                         </a>
                     </td>
                 </tr>
             @endforeach
         </x-datatable>
-    </div>
+    </section>
 @endsection

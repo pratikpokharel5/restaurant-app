@@ -3,31 +3,31 @@
 @section('title', 'Edit Menu')
 
 @section('content')
-    <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-md">
+    <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
         <x-goback href="{{ route('menus.index') }}">Edit Menu</x-goback>
 
-        <form method="POST" class="mt-3 grid grid-cols-2 gap-5" action="{{ route('menus.update', $menu) }}">
+        <form method="POST" class="mt-6 grid gap-5 md:grid-cols-2" action="{{ route('menus.update', $menu) }}">
             @csrf
             @method('PUT')
             <div>
                 <x-label for="name">Name</x-label>
 
                 <x-textfield id="name" name="name" placeholder="Enter menu name..."
-                    value="{{ old('name', $menu->name) }}" :error="$errors->first('name')" />
+                    value="{{ old('name', $menu->name) }}" :error="$errors->first('name')" required />
             </div>
 
-            <div>
+            <div class="md:col-span-2">
                 <x-label for="description">Description</x-label>
 
-                <x-textfield id="description" name="description" placeholder="Enter description..."
-                    value="{{ old('description', $menu->description) }}" :error="$errors->first('description')" />
+                <x-textarea id="description" name="description" rows="4" placeholder="Short staff-facing description"
+                    :error="$errors->first('description')" required>{{ old('description', $menu->description) }}</x-textarea>
             </div>
 
             <div>
                 <x-label for="price">Price</x-label>
 
                 <x-textfield id="price" name="price" type="number" step="0.01" placeholder="Enter price..."
-                    value="{{ old('price', $menu->price) }}" :error="$errors->first('price')" />
+                    value="{{ old('price', $menu->price) }}" :error="$errors->first('price')" min="0" required />
             </div>
 
             <div>
@@ -53,9 +53,12 @@
                 </x-select>
             </div>
 
-            <div class="col-span-2">
-                <x-button type="submit">Update</x-button>
+            <div class="md:col-span-2">
+                <x-button type="submit">
+                    <i class="fa-solid fa-floppy-disk mr-2" aria-hidden="true"></i>
+                    Update
+                </x-button>
             </div>
         </form>
-    </div>
+    </section>
 @endsection

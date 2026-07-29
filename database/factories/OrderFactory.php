@@ -2,11 +2,9 @@
 
 namespace Database\Factories;
 
-
-use Illuminate\Database\Eloquent\Factories\Factory;
-
-use App\Models\Order;
 use App\Models\Customer;
+use App\Models\Order;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<Order>
@@ -21,9 +19,9 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'customer_id' => fn() => Customer::inRandomOrder()->first()?->id ?? Customer::factory(),
+            'customer_id' => fn () => Customer::inRandomOrder()->first()?->id ?? Customer::factory(),
             'total_price' => fake()->randomFloat(2, 10, 500),
-            'status' => fake()->randomElement(['pending', 'preparing', 'on_the_way', 'delivered', 'cancelled']),
+            'status' => fake()->randomElement(Order::statuses()),
             'notes' => fake()->boolean(80) ? fake()->sentence() : null,
         ];
     }

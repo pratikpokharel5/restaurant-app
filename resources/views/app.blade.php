@@ -7,15 +7,17 @@
     <title>Restaurant App | @yield('title', 'Categories')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
 </head>
 
-<body>
+<body class="bg-slate-50 text-slate-900 antialiased">
     @include('layouts.appbar')
 
-    <div class="flex pt-14 text-sm">
+    <div class="min-h-screen pt-16 text-sm lg:flex">
         @include('layouts.sidebar')
 
-        <main class="grow p-5">
+        <main class="min-w-0 grow p-4 sm:p-6 lg:ml-64 lg:p-8">
             @yield('content')
         </main>
     </div>

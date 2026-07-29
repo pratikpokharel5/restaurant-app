@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-
+use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Models\Order;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::with(['items.menu', 'customer'])
+        $orders = Order::with([
+            'customer',
+            'items' => fn ($query) => $query
+                ->with('menu')
+                ->orderBy('id')
+                ->limit(3),
+        ])
+            ->withCount('items')
             ->filter($request->only(['search', 'status']))
             ->latest()
             ->paginate(10)
@@ -29,29 +34,16 @@ class OrderController extends Controller
         return view('orders.edit', compact('order'));
     }
 
-    public function update(Request $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
-        $validated = $request->validate([
-            'status' => [
-                'required',
-                Rule::in([
-                    Order::STATUS_PENDING,
-                    Order::STATUS_PREPARING,
-                    Order::STATUS_ON_THE_WAY,
-                    Order::STATUS_DELIVERED,
-                    Order::STATUS_CANCELLED,
-                ]),
-            ],
-            'notes' => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
 
-        if (
-            $order->status !== $validated['status'] &&
-            ! $order->canTransitionTo($validated['status'])
-        ) {
-            return back()->with([
-                'message' => "Invalid order transition.",
-            ]);
+        if ($order->status === $validated['status']) {
+            unset($validated['status']);
+        } elseif (! $order->canTransitionTo($validated['status'])) {
+            return back()
+                ->withErrors(['status' => 'This order cannot move to the selected status.'])
+                ->withInput();
         }
 
         DB::transaction(function () use ($order, $validated) {
@@ -62,10 +54,8 @@ class OrderController extends Controller
             }
         });
 
-        $order = $order->refresh()->load(['items.menu', 'customer', 'payment']);
-
         return redirect()->route('orders.edit', $order)->with([
-            'message' => "Order updated successfully.",
+            'message' => 'Order updated successfully.',
         ]);
     }
 }

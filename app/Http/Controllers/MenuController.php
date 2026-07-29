@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-
-use App\Models\Menu;
+use App\Http\Requests\Menu\StoreMenuRequest;
+use App\Http\Requests\Menu\UpdateMenuRequest;
 use App\Models\Category;
+use App\Models\Menu;
+use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
@@ -23,41 +23,14 @@ class MenuController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::active()->orderBy('name')->get();
 
         return view('menus.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreMenuRequest $request)
     {
-        $validated = $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique(Menu::class),
-            ],
-            'description' => [
-                'required',
-                'string',
-            ],
-            'price' => [
-                'required',
-                'numeric',
-                'min:0',
-                'max:999999.99',
-            ],
-            'is_available' => [
-                'required',
-                'boolean',
-            ],
-            'category_id' => [
-                'required',
-                'exists:categories,id',
-            ]
-        ]);
-
-        Menu::create($validated);
+        Menu::create($request->validated());
 
         return redirect()
             ->route('menus.index')
@@ -66,53 +39,17 @@ class MenuController extends Controller
 
     public function edit(Menu $menu)
     {
-        $categories = Category::all();
+        $categories = Category::active()->orderBy('name')->get();
 
         return view('menus.edit', compact('menu', 'categories'));
     }
 
-    public function update(Request $request, Menu $menu)
+    public function update(UpdateMenuRequest $request, Menu $menu)
     {
-        $validated = $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique(Menu::class)->ignore($menu),
-            ],
-            'description' => [
-                'required',
-                'string',
-            ],
-            'price' => [
-                'required',
-                'numeric',
-                'min:0',
-                'max:999999.99',
-            ],
-            'is_available' => [
-                'required',
-                'boolean',
-            ],
-            'category_id' => [
-                'required',
-                Rule::exists(Category::class, 'id'),
-            ],
-        ]);
-
-        $menu->update($validated);
+        $menu->update($request->validated());
 
         return redirect()
             ->route('menus.index')
             ->with('message', 'Menu updated successfully.');
-    }
-
-    public function destroy(Menu $menu)
-    {
-        $menu->delete();
-
-        return redirect()
-            ->route('menus.index')
-            ->with('message', 'Menu deleted successfully.');
     }
 }

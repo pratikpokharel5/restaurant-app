@@ -1,13 +1,13 @@
 @props(['href' => '#'])
 
-<div class="flex items-center gap-x-1">
-    <a href={{ $href }} class="-ml-2 cursor-pointer rounded-full p-2 hover:bg-gray-100">
-        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-        </svg>
+<div class="flex items-center gap-x-2">
+    <a href="{{ $href }}"
+        class="-ml-2 rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        aria-label="Go back">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
     </a>
 
-    <h3 class="text-2xl font-bold">
+    <h1 class="text-xl font-bold text-slate-950 sm:text-2xl">
         {{ $slot }}
-    </h3>
+    </h1>
 </div>

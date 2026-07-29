@@ -1,18 +1,17 @@
 @props(['search' => '', 'searchPlaceholder' => 'Search...', 'pagination' => null])
 
 <div {{ $attributes }}>
-    <form method="GET" class="flex items-center gap-x-5">
-        <div class="relative w-64">
-            <input type="text" name="search"
-                class="peer w-full rounded-md border border-gray-200 bg-gray-50 py-2 pl-10 pr-3 text-sm focus:border-blue-500 focus:ring-blue-500"
+    <form method="GET"
+        class="flex flex-col gap-3 rounded-md border border-slate-200 bg-slate-50 p-3 sm:flex-row sm:items-end">
+        <div class="relative w-full sm:max-w-xs">
+            <label for="datatable-search" class="sr-only">{{ $searchPlaceholder }}</label>
+            <input type="text" name="search" id="datatable-search"
+                class="peer w-full rounded-md border border-slate-300 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
                 placeholder="{{ $searchPlaceholder }}" value="{{ $search }}" />
 
-            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 peer-focus:text-blue-600">
-                <svg width="18" height="18" fill="none" stroke-width="2" viewBox="0 0 24 24"
-                    stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-                </svg>
+            <div
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 peer-focus:text-blue-600">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
             </div>
         </div>
 
@@ -20,36 +19,41 @@
             {{ $filters }}
         @endif
 
-        <div class="flex gap-x-2">
+        <div class="flex flex-wrap gap-2">
             <x-button type="submit">
+                <i class="fa-solid fa-filter mr-2" aria-hidden="true"></i>
                 Apply Filters
             </x-button>
 
-            <x-button as="link" href="{{ request()->url() }}" class="bg-gray-500 hover:bg-gray-600">
+            <x-button as="link" href="{{ request()->url() }}"
+                class="border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">
+                <i class="fa-solid fa-rotate-left mr-2" aria-hidden="true"></i>
                 Clear Filters
             </x-button>
         </div>
     </form>
 
-    <div class="mt-3 overflow-x-auto">
-        <table class="w-full border-collapse text-left">
-            <thead>
-                <tr>
-                    {{ $header }}
-                </tr>
-            </thead>
-            <tbody>
-                {{ $slot }}
-
-                @if ($pagination->isEmpty())
+    <div class="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white">
+        <div class="overflow-x-auto">
+            <table class="min-w-180 w-full text-left">
+                <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
-                        <td colspan="100%" class="border border-gray-300 p-4 text-center text-gray-500">
-                            No data found.
-                        </td>
+                        {{ $header }}
                     </tr>
-                @endif
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {{ $slot }}
+
+                    @if ($pagination->isEmpty())
+                        <tr>
+                            <td colspan="100%" class="p-8 text-center text-slate-500">
+                                No data found.
+                            </td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
     </div>
 
     @if ($pagination->isNotEmpty())

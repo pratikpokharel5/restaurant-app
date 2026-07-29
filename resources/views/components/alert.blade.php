@@ -1,3 +1,4 @@
-<div {{ $attributes->twMerge('bg-red-100 border border-red-400 text-red-800 p-3 rounded') }}>
+<div {{ $attributes->twMerge('rounded-md border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-800') }}
+    role="alert">
     {{ $slot }}
 </div>

@@ -1,1 +1,1 @@
-<label {{ $attributes->twMerge('inline-block mb-2') }}>{{ $slot }}</label>
+<label {{ $attributes->twMerge('mb-2 inline-block text-sm font-medium text-slate-700') }}>{{ $slot }}</label>

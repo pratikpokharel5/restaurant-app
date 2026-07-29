@@ -1,7 +1,13 @@
 <?php
 
-test('the application returns a successful response', function () {
+test('the home page redirects to dashboard', function () {
     $response = $this->get('/');
 
-    $response->assertStatus(200);
+    $response->assertRedirect('/dashboard');
+});
+
+test('admin pages redirect guests to login', function () {
+    $response = $this->get('/categories');
+
+    $response->assertRedirect('/login');
 });

@@ -2,14 +2,15 @@
 
 @php
     $statusColors = [
-        'pending' => 'bg-orange-200 text-orange-800',
-        'preparing' => 'bg-purple-200 text-purple-800',
-        'on_the_way' => 'bg-yellow-200 text-yellow-800',
-        'delivered' => 'bg-green-200 text-green-800',
-        'cancelled' => 'bg-red-100 text-red-800',
+        'pending' => 'bg-amber-50 text-amber-700 ring-amber-200',
+        'preparing' => 'bg-indigo-50 text-indigo-700 ring-indigo-200',
+        'on_the_way' => 'bg-cyan-50 text-cyan-700 ring-cyan-200',
+        'delivered' => 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+        'cancelled' => 'bg-red-50 text-red-700 ring-red-200',
     ];
 @endphp
 
-<span class="{{ $statusColors[$status] }} rounded-full px-2 py-1">
+<span
+    class="{{ $statusColors[$status] ?? 'bg-slate-50 text-slate-700 ring-slate-200' }} inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset">
     {{ Str::headline($status) }}
 </span>

@@ -3,11 +3,15 @@
 @section('title', 'Menus')
 
 @section('content')
-    <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-md">
-        <div class="flex items-center justify-between">
-            <h3 class="text-2xl font-bold">Menus</h3>
+    <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-950">Menus</h1>
+                <p class="mt-1 text-sm text-slate-500">Manage sellable items, prices, and availability.</p>
+            </div>
 
             <x-button as="link" href="{{ route('menus.create') }}">
+                <i class="fa-solid fa-plus mr-2" aria-hidden="true"></i>
                 Create Menu
             </x-button>
         </div>
@@ -24,39 +28,38 @@
             </x-slot:filters>
 
             <x-slot:header>
-                <th class="border border-gray-300 bg-gray-100 p-4">Name</th>
-                <th class="border border-gray-300 bg-gray-100 p-4">Category</th>
-                <th class="border border-gray-300 bg-gray-100 p-4">Price</th>
-                <th class="border border-gray-300 bg-gray-100 p-4">Active Status</th>
-                <th class="border border-gray-300 bg-gray-100 p-4">Actions</th>
+                <th class="px-4 py-3 font-semibold">Name</th>
+                <th class="px-4 py-3 font-semibold">Category</th>
+                <th class="px-4 py-3 font-semibold">Price</th>
+                <th class="px-4 py-3 font-semibold">Availability</th>
+                <th class="px-4 py-3 font-semibold">Actions</th>
             </x-slot:header>
 
             @foreach ($menus as $menu)
-                <tr>
-                    <td class="border border-gray-300 p-4">{{ $menu->name }}</td>
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-4">
+                        <div class="font-medium text-slate-950">{{ $menu->name }}</div>
+                        <div class="mt-1 max-w-md truncate text-sm text-slate-500">{{ $menu->description }}</div>
+                    </td>
 
-                    <td class="border border-gray-300 p-4">{{ $menu->category->name ?? '-' }}</td>
+                    <td class="px-4 py-4 text-slate-600">{{ $menu->category->name ?? 'Uncategorized' }}</td>
 
-                    <td class="border border-gray-300 p-4">{{ $menu->price }}</td>
+                    <td class="px-4 py-4 font-medium text-slate-950">{{ number_format($menu->price, 2) }}</td>
 
-                    <td class="border border-gray-300 p-4">
+                    <td class="px-4 py-4">
                         <span
-                            class="{{ $menu->is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} rounded-full px-3 py-1.5">
-                            {{ $menu->is_available ? 'Active' : 'Inactive' }}
+                            class="{{ $menu->is_available ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' : 'bg-red-50 text-red-700 ring-red-200' }} inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset">
+                            {{ $menu->is_available ? 'Available' : 'Unavailable' }}
                         </span>
                     </td>
 
-                    <td class="border border-gray-300 p-4">
-                        <a href="{{ route('menus.edit', $menu) }}" class="text-blue-600 hover:underline">Edit</a>
-
-                        <form class="ml-2 inline-block" method="POST" action="{{ route('menus.destroy', $menu) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="cursor-pointer text-red-500 hover:underline">Delete</button>
-                        </form>
+                    <td class="px-4 py-4">
+                        <a href="{{ route('menus.edit', $menu) }}" class="text-blue-600 hover:text-blue-800">
+                            Edit
+                        </a>
                     </td>
                 </tr>
             @endforeach
         </x-datatable>
-    </div>
+    </section>
 @endsection

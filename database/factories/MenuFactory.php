@@ -2,11 +2,9 @@
 
 namespace Database\Factories;
 
-
-use Illuminate\Database\Eloquent\Factories\Factory;
-
-use App\Models\Menu;
 use App\Models\Category;
+use App\Models\Menu;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<Menu>
@@ -25,7 +23,7 @@ class MenuFactory extends Factory
             'description' => fake()->sentence(),
             'price' => fake()->randomFloat(2, 5, 100),
             'is_available' => fake()->boolean(80),
-            'category_id' => fn() => Category::inRandomOrder()->first()?->id ?? Category::factory(),
+            'category_id' => fn () => Category::inRandomOrder()->first()?->id ?? Category::factory(),
         ];
     }
 }

@@ -3,30 +3,33 @@
 @section('title', 'Create Category')
 
 @section('content')
-    <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-md">
+    <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
         <x-goback href="{{ route('categories.index') }}">
-            Categories
+            Create Category
         </x-goback>
 
-        <form class="mt-3 grid grid-cols-2 gap-5" method="POST" action="{{ route('categories.store') }}">
+        <form class="mt-6 grid gap-5 md:grid-cols-2" method="POST" action="{{ route('categories.store') }}">
             @csrf
             <div>
                 <x-label for="name">Name</x-label>
 
-                <x-textfield id="name" name="name" placeholder="Category name..." value="{{ old('name') }}"
-                    :error="$errors->first('name')" />
+                <x-textfield id="name" name="name" placeholder="Lunch specials" value="{{ old('name') }}"
+                    :error="$errors->first('name')" required />
             </div>
 
-            <div>
+            <div class="md:col-span-2">
                 <x-label for="description">Description</x-label>
 
-                <x-textfield id="description" name="description" placeholder="Enter description..."
-                    value="{{ old('description') }}" />
+                <x-textarea id="description" name="description" rows="4"
+                    placeholder="Optional notes for staff">{{ old('description') }}</x-textarea>
             </div>
 
-            <div class="col-span-2">
-                <x-button type="submit">Create</x-button>
+            <div class="md:col-span-2">
+                <x-button type="submit">
+                    <i class="fa-solid fa-check mr-2" aria-hidden="true"></i>
+                    Create
+                </x-button>
             </div>
         </form>
-    </div>
+    </section>
 @endsection

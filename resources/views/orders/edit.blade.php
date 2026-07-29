@@ -1,11 +1,6 @@
 @php
-    $orderStatus = [
-        'pending' => 'Pending',
-        'preparing' => 'Preparing',
-        'on_the_way' => 'On the Way',
-        'delivered' => 'Delivered',
-        'cancelled' => 'Cancelled',
-    ];
+    $orderStatus = \App\Models\Order::statusLabels();
+    $nextStatuses = $order->nextStatuses();
 @endphp
 
 @extends('app')
@@ -13,114 +8,112 @@
 @section('title', 'Orders')
 
 @section('content')
-    <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-lg">
-        <div class="flex items-center justify-between">
-            <x-goback href="{{ route('orders.index') }}">View Orders</x-goback>
+    <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <x-goback href="{{ route('orders.index') }}">Order #{{ $order->id }}</x-goback>
 
             <div>
                 <x-button as="link" href="{{ route('customers.show', $order->customer_id) }}">
+                    <i class="fa-solid fa-user mr-2" aria-hidden="true"></i>
                     View Customer
                 </x-button>
             </div>
         </div>
 
-        <div class="mt-3 grid grid-cols-3 gap-x-5 gap-y-3">
+        <div class="mt-6 grid gap-4 rounded-md border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
-                <div>Order Id</div>
-                <div class="mt-1 font-semibold">#{{ $order->id }}</div>
+                <div class="text-xs font-medium uppercase text-slate-500">Customer</div>
+                <div class="mt-1 font-semibold text-slate-950">{{ $order->customer->name }}</div>
             </div>
 
             <div>
-                <div>Customer Name</div>
-                <div class="mt-1 font-semibold">{{ $order->customer->name }}</div>
-            </div>
-
-            <div>
-                <div>Order Status</div>
+                <div class="text-xs font-medium uppercase text-slate-500">Status</div>
                 <div class="mt-2 font-semibold">
                     <x-orderstatus :status="$order->status" />
                 </div>
             </div>
 
             <div>
-                <div>Total Price</div>
-                <div class="mt-1 font-semibold">{{ $order->total_price }}</div>
+                <div class="text-xs font-medium uppercase text-slate-500">Total</div>
+                <div class="mt-1 font-semibold text-slate-950">{{ number_format($order->total_price, 2) }}</div>
             </div>
 
             <div>
-                <div>Order Date</div>
-                <div class="mt-1 font-semibold">
-                    {{ $order->created_at->format('Y-m-d \a\t H:i a') }}
+                <div class="text-xs font-medium uppercase text-slate-500">Created</div>
+                <div class="mt-1 font-semibold text-slate-950">
+                    {{ $order->created_at->format('M j, Y g:i A') }}
                 </div>
             </div>
 
             <div>
-                <div>Order Last Updated</div>
-                <div class="mt-1 font-semibold">
-                    {{ $order->updated_at->format('Y-m-d \a\t H:i a') }}
+                <div class="text-xs font-medium uppercase text-slate-500">Last Updated</div>
+                <div class="mt-1 font-semibold text-slate-950">
+                    {{ $order->updated_at->format('M j, Y g:i A') }}
                 </div>
             </div>
 
-            <div class="col-span-3">
-                <div>Notes</div>
-                <div class="mt-1 font-semibold">
+            <div class="sm:col-span-2 lg:col-span-3">
+                <div class="text-xs font-medium uppercase text-slate-500">Notes</div>
+                <div class="mt-1 font-semibold text-slate-950">
                     {{ $order->notes ?? 'N/A' }}
                 </div>
             </div>
         </div>
 
         <div class="mt-5">
-            <h4 class="mb-3 text-lg font-bold">Order Items</h4>
+            <h2 class="mb-3 text-lg font-bold text-slate-950">Order Items</h2>
 
-            <table class="w-full rounded-md border border-gray-200">
-                <thead class="bg-gray-50">
-                    <tr class="text-left">
-                        <th class="p-2">Id</th>
-                        <th class="p-2">Menu Item</th>
-                        <th class="p-2">Qty</th>
-                        <th class="p-2">Price</th>
-                        <th class="p-2">Total</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach ($order->items as $item)
+            <div class="overflow-hidden rounded-md border border-slate-200">
+                <table class="w-full min-w-[640px] text-left">
+                    <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                         <tr>
-                            <td class="border-t border-gray-200 p-2">{{ $item->id }}</td>
-                            <td class="border-t border-gray-200 p-2">{{ $item->menu->name }}</td>
-                            <td class="border-t border-gray-200 p-2">{{ $item->quantity }}</td>
-                            <td class="border-t border-gray-200 p-2">{{ $item->unit_price }}</td>
-                            <td class="border-t border-gray-200 p-2">
-                                {{ number_format($item->quantity * $item->unit_price, 2) }}
+                            <th class="px-4 py-3">Id</th>
+                            <th class="px-4 py-3">Menu Item</th>
+                            <th class="px-4 py-3">Qty</th>
+                            <th class="px-4 py-3">Price</th>
+                            <th class="px-4 py-3">Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach ($order->items as $item)
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 text-slate-500">#{{ $item->id }}</td>
+                                <td class="px-4 py-3 font-medium text-slate-950">
+                                    {{ $item->menu->name ?? 'Archived menu item' }}</td>
+                                <td class="px-4 py-3">{{ $item->quantity }}</td>
+                                <td class="px-4 py-3">{{ number_format($item->unit_price, 2) }}</td>
+                                <td class="px-4 py-3 font-medium">
+                                    {{ number_format($item->quantity * $item->unit_price, 2) }}
+                                </td>
+                            </tr>
+                        @endforeach
+
+                        <tr class="bg-slate-50">
+                            <td class="px-4 py-3 font-semibold" colspan="4">Total</td>
+                            <td class="px-4 py-3 font-semibold">
+                                {{ number_format($order->items->sum(fn($item) => $item->quantity * $item->unit_price), 2) }}
                             </td>
                         </tr>
-                    @endforeach
-
-                    <tr>
-                        <td class="border-t border-gray-200 p-2 font-semibold"></td>
-                        <td class="border-t border-gray-200 p-2 font-semibold"></td>
-                        <td class="border-t border-gray-200 p-2 font-semibold"></td>
-                        <td class="border-t border-gray-200 p-2 font-semibold">Total</td>
-                        <td class="border-t border-gray-200 p-2 font-semibold">
-                            {{ number_format($order->items->sum(fn($item) => $item->quantity * $item->unit_price), 2) }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        @if ($order->status !== 'delivered' && $order->status !== 'cancelled')
-            <form class="mt-5" method="POST" action="{{ route('orders.update', $order) }}">
+        @if (count($nextStatuses) > 0)
+            <form class="mt-6 rounded-md border border-slate-200 bg-slate-50 p-4" method="POST"
+                action="{{ route('orders.update', $order) }}">
                 @csrf
                 @method('PUT')
-                <h4 class="mb-3 text-lg font-bold">Change Order Status</h4>
+                <h2 class="mb-3 text-lg font-bold text-slate-950">Change Order Status</h2>
 
-                <div class="w-64">
-                    <x-select name="status" value="{{ $order->status }}">
-                        @foreach ($orderStatus as $status => $label)
-                            <option value="{{ $status }}" @if ($order->status == $status) selected @endif>
-                                {{ $label }}
-                            </option>
+                <div class="max-w-sm">
+                    <x-label for="status">Next status</x-label>
+                    <x-select id="status" name="status" default-label="Select next status..."
+                        value="{{ old('status') }}" :error="$errors->first('status')" required>
+                        @foreach ($nextStatuses as $status)
+                            <option value="{{ $status }}" @if (old('status') === $status) selected @endif>
+                                {{ $orderStatus[$status] }}</option>
                         @endforeach
                     </x-select>
                 </div>
@@ -128,63 +121,58 @@
                 <div class="mt-5">
                     <x-label for="notes">Notes</x-label>
 
-                    <x-textarea id="notes" name="notes" rows="5">{{ $order->notes }}</x-textarea>
+                    <x-textarea id="notes" name="notes" rows="5"
+                        :error="$errors->first('notes')">{{ old('notes', $order->notes) }}</x-textarea>
                 </div>
 
                 <div class="mt-5">
-                    <x-button type="submit">Update Order Status</x-button>
+                    <x-button type="submit">
+                        <i class="fa-solid fa-arrows-rotate mr-2" aria-hidden="true"></i>
+                        Update Order Status
+                    </x-button>
                 </div>
             </form>
         @endif
 
-        @if ($order->status === 'delivered')
+        @if ($order->payment)
             <div class="mt-5">
-                <h4 class="mb-3 text-lg font-bold">Payment Information</h4>
+                <h2 class="mb-3 text-lg font-bold text-slate-950">Payment Information</h2>
 
-                <div class="mt-4 grid grid-cols-3 gap-x-5 gap-y-3">
+                <div class="grid gap-4 rounded-md border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 lg:grid-cols-3">
                     <div>
-                        <div>Payment Id</div>
-                        <div class="mt-1 font-semibold">#{{ $order->payment->id }}</div>
+                        <div class="text-xs font-medium uppercase text-slate-500">Payment Id</div>
+                        <div class="mt-1 font-semibold text-slate-950">#{{ $order->payment->id }}</div>
                     </div>
 
                     <div>
-                        <div>Order Id</div>
-                        <div class="mt-1 font-semibold">#{{ $order->id }}</div>
+                        <div class="text-xs font-medium uppercase text-slate-500">Amount</div>
+                        <div class="mt-1 font-semibold text-slate-950">{{ number_format($order->payment->amount, 2) }}
+                        </div>
                     </div>
 
                     <div>
-                        <div>Customer Name</div>
-                        <div class="mt-1 font-semibold">{{ $order->customer->name }}</div>
-                    </div>
-
-                    <div>
-                        <div>Total Price</div>
-                        <div class="mt-1 font-semibold">{{ $order->payment->amount }}</div>
-                    </div>
-
-                    <div>
-                        <div>Payment Status</div>
+                        <div class="text-xs font-medium uppercase text-slate-500">Status</div>
                         <div class="mt-2 font-semibold">
                             <span
-                                class="{{ $order->payment->status ? 'bg-green-200 text-green-800' : 'bg-red-300 text-red-800' }} rounded-full px-2 py-1">
+                                class="{{ $order->payment->status ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' : 'bg-red-50 text-red-700 ring-red-200' }} inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset">
                                 {{ $order->payment->status ? 'Paid' : 'Not Paid' }}
                             </span>
                         </div>
                     </div>
 
                     <div>
-                        <div>Payment Method</div>
-                        <div class="mt-1 font-semibold">{{ ucfirst($order->payment->payment_method) }}</div>
+                        <div class="text-xs font-medium uppercase text-slate-500">Method</div>
+                        <div class="mt-1 font-semibold text-slate-950">{{ ucfirst($order->payment->payment_method) }}</div>
                     </div>
 
                     <div>
-                        <div>Payment Date</div>
-                        <div class="mt-1 font-semibold">
-                            {{ $order->payment->created_at->format('Y-m-d \a\t H:i a') }}
+                        <div class="text-xs font-medium uppercase text-slate-500">Payment Date</div>
+                        <div class="mt-1 font-semibold text-slate-950">
+                            {{ $order->payment->created_at->format('M j, Y g:i A') }}
                         </div>
                     </div>
                 </div>
             </div>
         @endif
-    </div>
+    </section>
 @endsection

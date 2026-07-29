@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Customer;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
@@ -21,6 +19,12 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        return view('customers.show', compact('customer'));
+        $recentOrders = $customer->orders()
+            ->with('payment')
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        return view('customers.show', compact('customer', 'recentOrders'));
     }
 }
