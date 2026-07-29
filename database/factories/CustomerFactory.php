@@ -13,6 +13,8 @@ class CustomerFactory extends Factory
 {
     protected static ?string $password;
 
+    protected static int $number = 0;
+
     /**
      * Define the model's default state.
      *
@@ -20,11 +22,13 @@ class CustomerFactory extends Factory
      */
     public function definition(): array
     {
+        $number = ++static::$number;
+
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->boolean(80) ? $this->faker->unique()->safeEmail() : null,
-            'phone' => $this->faker->unique()->phoneNumber(),
-            'address' => $this->faker->boolean(80) ? $this->faker->address() : null,
+            'name' => "Demo Customer {$number}",
+            'email' => "demo.customer.{$number}@example.com",
+            'phone' => '980200'.str_pad((string) $number, 4, '0', STR_PAD_LEFT),
+            'address' => "Demo Address {$number}, Kathmandu",
             'user_role' => 'customer',
             'password' => static::$password ??= Hash::make('password'),
         ];

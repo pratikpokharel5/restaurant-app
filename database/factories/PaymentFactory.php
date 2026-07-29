@@ -23,8 +23,8 @@ class PaymentFactory extends Factory
             'amount' => function (array $attributes) {
                 return Order::find($attributes['order_id'])->total_price;
             },
-            'payment_method' => $this->faker->randomElement(['cash', 'online']),
-            'status' => $this->faker->boolean(80),
+            'payment_method' => random_int(0, 1) === 1 ? 'cash' : 'online',
+            'status' => random_int(1, 100) <= 80,
         ];
     }
 }

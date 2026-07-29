@@ -18,11 +18,13 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
+        $statuses = Order::statuses();
+
         return [
             'customer_id' => fn () => Customer::inRandomOrder()->first()?->id ?? Customer::factory(),
-            'total_price' => $this->faker->randomFloat(2, 10, 500),
-            'status' => $this->faker->randomElement(Order::statuses()),
-            'notes' => $this->faker->boolean(80) ? $this->faker->sentence() : null,
+            'total_price' => random_int(1000, 50000) / 100,
+            'status' => $statuses[array_rand($statuses)],
+            'notes' => random_int(1, 100) <= 80 ? 'Demo order note for kitchen staff.' : null,
         ];
     }
 }

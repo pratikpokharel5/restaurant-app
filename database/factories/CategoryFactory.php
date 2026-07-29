@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CategoryFactory extends Factory
 {
+    protected static int $number = 0;
+
     /**
      * Define the model's default state.
      *
@@ -17,9 +19,11 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
+        $number = ++static::$number;
+
         return [
-            'name' => $this->faker->unique()->words(2, true),
-            'description' => $this->faker->boolean(80) ? $this->faker->sentence() : null,
+            'name' => "Demo Category {$number}",
+            'description' => "A demo category used for sample restaurant menus.",
         ];
     }
 }

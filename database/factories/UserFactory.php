@@ -17,6 +17,8 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
+    protected static int $number = 0;
+
     /**
      * Define the model's default state.
      *
@@ -24,9 +26,11 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $number = ++static::$number;
+
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'name' => "Demo User {$number}",
+            'email' => "demo.user.{$number}@example.com",
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
