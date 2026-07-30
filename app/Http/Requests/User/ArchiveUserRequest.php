@@ -11,10 +11,8 @@ class ArchiveUserRequest extends FormRequest
     {
         $user = $this->route('user');
 
-        return ($this->user()?->isAdmin() ?? false)
-            && $user instanceof User
-            && $user->id !== $this->user()->id
-            && $user->role === User::ROLE_STAFF;
+        return $user instanceof User
+            && ($this->user()?->can('archive', $user) ?? false);
     }
 
     public function rules(): array

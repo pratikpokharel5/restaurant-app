@@ -12,6 +12,8 @@ class MenuController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Menu::class);
+
         $menus = Menu::with('category')
             ->filter($request->only(['search', 'is_available']))
             ->latest()
@@ -23,6 +25,8 @@ class MenuController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Menu::class);
+
         $categories = Category::active()->orderBy('name')->get();
 
         return view('menus.create', compact('categories'));
@@ -39,6 +43,8 @@ class MenuController extends Controller
 
     public function edit(Menu $menu)
     {
+        $this->authorize('update', $menu);
+
         $categories = Category::active()->orderBy('name')->get();
 
         return view('menus.edit', compact('menu', 'categories'));

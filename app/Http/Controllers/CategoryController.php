@@ -11,6 +11,8 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Category::class);
+
         $categories = Category::filter($request->only(['search', 'status']))
             ->latest()
             ->paginate(10)
@@ -21,6 +23,8 @@ class CategoryController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Category::class);
+
         return view('categories.create');
     }
 
@@ -35,6 +39,8 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
+        $this->authorize('update', $category);
+
         return view('categories.edit', compact('category'));
     }
 

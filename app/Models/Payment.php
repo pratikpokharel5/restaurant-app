@@ -34,6 +34,14 @@ class Payment extends Model
             $query->whereHas('order.customer', function ($query) use ($search) {
                 $query->where('name', 'like', '%'.$search.'%');
             });
-        });
+        })
+            ->when(
+                isset($filters['status']) && in_array($filters['status'], ['0', '1'], true),
+                fn ($query) => $query->where('status', (bool) $filters['status'])
+            )
+            ->when(
+                $filters['payment_date'] ?? null,
+                fn ($query, $paymentDate) => $query->whereDate('created_at', $paymentDate)
+            );
     }
 }

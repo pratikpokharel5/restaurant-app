@@ -11,6 +11,8 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Order::class);
+
         $orders = Order::with([
             'customer',
             'items' => fn ($query) => $query
@@ -19,7 +21,7 @@ class OrderController extends Controller
                 ->limit(3),
         ])
             ->withCount('items')
-            ->filter($request->only(['search', 'status']))
+            ->filter($request->only(['search', 'status', 'order_date']))
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -29,6 +31,8 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
+        $this->authorize('update', $order);
+
         $order = $order->load(['items.menu', 'customer', 'payment']);
 
         return view('orders.edit', compact('order'));

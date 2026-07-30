@@ -10,16 +10,18 @@
                 <p class="mt-1 text-sm text-slate-500">Group menu items for faster staff lookup.</p>
             </div>
 
-            <x-button as="link" href="{{ route('categories.create') }}">
-                <i class="fa-solid fa-plus mr-2" aria-hidden="true"></i>
-                Create Category
-            </x-button>
+            @can('create', \App\Models\Category::class)
+                <x-button as="link" href="{{ route('categories.create') }}">
+                    <i class="fa-solid fa-plus mr-2" aria-hidden="true"></i>
+                    Create Category
+                </x-button>
+            @endcan
         </div>
 
         <x-datatable class="mt-3" search="{{ request('search') }}" search-placeholder="Search category..."
             :pagination="$categories">
             <x-slot:filters>
-                <div class="w-64">
+                <div class="w-full sm:w-64">
                     <x-select name="status" default-label="Filter by Status..." value="{{ request('status') }}">
                         <option value="active" @if (request('status') === 'active') selected @endif>Active</option>
                         <option value="inactive" @if (request('status') === 'inactive') selected @endif>Inactive</option>
@@ -31,7 +33,9 @@
                 <th class="px-4 py-3 font-semibold">Name</th>
                 <th class="px-4 py-3 font-semibold">Description</th>
                 <th class="px-4 py-3 font-semibold">Status</th>
-                <th class="px-4 py-3 font-semibold">Actions</th>
+                @can('create', \App\Models\Category::class)
+                    <th class="px-4 py-3 font-semibold">Actions</th>
+                @endcan
             </x-slot:header>
 
             @foreach ($categories as $category)
@@ -47,11 +51,13 @@
                         </span>
                     </td>
 
-                    <td class="px-4 py-4">
-                        <a href="{{ route('categories.edit', $category) }}" class="text-blue-600 hover:text-blue-800">
-                            Edit
-                        </a>
-                    </td>
+                    @can('update', $category)
+                        <td class="px-4 py-4">
+                            <a href="{{ route('categories.edit', $category) }}" class="text-blue-600 hover:text-blue-800">
+                                Edit
+                            </a>
+                        </td>
+                    @endcan
                 </tr>
             @endforeach
         </x-datatable>

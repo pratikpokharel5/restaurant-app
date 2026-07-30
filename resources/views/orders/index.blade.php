@@ -15,7 +15,7 @@
 
         <x-datatable class="mt-3" search="{{ request('search') }}" search-placeholder="Search customer..." :pagination="$orders">
             <x-slot:filters>
-                <div class="w-64">
+                <div class="w-full sm:w-64">
                     <x-select name="status" default-label="Filter by Status..." value="{{ request('status') }}">
                         @foreach ($orderStatus as $value => $label)
                             <option value="{{ $value }}" @if (request('status') == $value) selected @endif>
@@ -23,6 +23,11 @@
                             </option>
                         @endforeach
                     </x-select>
+                </div>
+
+                <div class="w-full sm:w-64">
+                    <label for="order_date" class="sr-only">Filter by Order Date</label>
+                    <x-textfield id="order_date" type="date" name="order_date" value="{{ request('order_date') }}" />
                 </div>
             </x-slot:filters>
 

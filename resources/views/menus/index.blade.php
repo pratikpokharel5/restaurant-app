@@ -10,15 +10,17 @@
                 <p class="mt-1 text-sm text-slate-500">Manage sellable items, prices, and availability.</p>
             </div>
 
-            <x-button as="link" href="{{ route('menus.create') }}">
-                <i class="fa-solid fa-plus mr-2" aria-hidden="true"></i>
-                Create Menu
-            </x-button>
+            @can('create', \App\Models\Menu::class)
+                <x-button as="link" href="{{ route('menus.create') }}">
+                    <i class="fa-solid fa-plus mr-2" aria-hidden="true"></i>
+                    Create Menu
+                </x-button>
+            @endcan
         </div>
 
         <x-datatable class="mt-3" search="{{ request('search') }}" search-placeholder="Search menu..." :pagination="$menus">
             <x-slot:filters>
-                <div class="w-64">
+                <div class="w-full sm:w-64">
                     <x-select name="is_available" default-label="Filter by Availability..."
                         value="{{ request('is_available') }}">
                         <option value="1" @if (request('is_available') == '1') selected @endif>Available</option>
@@ -32,7 +34,9 @@
                 <th class="px-4 py-3 font-semibold">Category</th>
                 <th class="px-4 py-3 font-semibold">Price</th>
                 <th class="px-4 py-3 font-semibold">Availability</th>
-                <th class="px-4 py-3 font-semibold">Actions</th>
+                @can('create', \App\Models\Menu::class)
+                    <th class="px-4 py-3 font-semibold">Actions</th>
+                @endcan
             </x-slot:header>
 
             @foreach ($menus as $menu)
@@ -53,11 +57,13 @@
                         </span>
                     </td>
 
-                    <td class="px-4 py-4">
-                        <a href="{{ route('menus.edit', $menu) }}" class="text-blue-600 hover:text-blue-800">
-                            Edit
-                        </a>
-                    </td>
+                    @can('update', $menu)
+                        <td class="px-4 py-4">
+                            <a href="{{ route('menus.edit', $menu) }}" class="text-blue-600 hover:text-blue-800">
+                                Edit
+                            </a>
+                        </td>
+                    @endcan
                 </tr>
             @endforeach
         </x-datatable>

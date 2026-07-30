@@ -10,15 +10,17 @@
                 <p class="mt-1 text-sm text-slate-500">Manage staff accounts that can access the admin app.</p>
             </div>
 
-            <x-button as="link" href="{{ route('users.create') }}">
-                <i class="fa-solid fa-plus mr-2" aria-hidden="true"></i>
-                Create Staff
-            </x-button>
+            @can('create', \App\Models\User::class)
+                <x-button as="link" href="{{ route('users.create') }}">
+                    <i class="fa-solid fa-plus mr-2" aria-hidden="true"></i>
+                    Create Staff
+                </x-button>
+            @endcan
         </div>
 
         <x-datatable class="mt-3" search="{{ request('search') }}" search-placeholder="Search staff..." :pagination="$users">
             <x-slot:filters>
-                <div class="w-64">
+                <div class="w-full sm:w-64">
                     <x-select name="status" default-label="Filter by Status..." value="{{ request('status') }}">
                         <option value="active" @if (request('status') === 'active') selected @endif>Active</option>
                         <option value="archived" @if (request('status') === 'archived') selected @endif>Archived</option>
@@ -53,24 +55,9 @@
                     <td class="px-4 py-4 text-slate-600">{{ $user->created_at->format('M j, Y') }}</td>
 
                     <td class="px-4 py-4">
-                        @if ($user->isArchived())
-                            <form method="POST" action="{{ route('users.restore', $user) }}">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="text-emerald-700 hover:text-emerald-900">
-                                    Restore
-                                </button>
-                            </form>
-                        @else
-                            <form method="POST" action="{{ route('users.archive', $user) }}">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="text-red-600 hover:text-red-800"
-                                    onclick="return confirm('Archive this staff user? They will no longer be able to sign in.')">
-                                    Archive
-                                </button>
-                            </form>
-                        @endif
+                        <a href="{{ route('users.show', $user) }}" class="text-blue-600 hover:text-blue-800">
+                            View User
+                        </a>
                     </td>
                 </tr>
             @endforeach

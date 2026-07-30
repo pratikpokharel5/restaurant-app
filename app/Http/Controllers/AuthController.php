@@ -15,6 +15,14 @@ class AuthController extends Controller
 
     public function store(LoginRequest $request)
     {
+        if ($request->hasArchivedUserWithValidPassword()) {
+            return back()
+                ->withErrors([
+                    'email' => 'Your account has been deactivated. Please contact an administrator for access.',
+                ])
+                ->onlyInput('email');
+        }
+
         if (Auth::attempt($request->credentials(), $request->boolean('remember'))) {
             $request->session()->regenerate();
 

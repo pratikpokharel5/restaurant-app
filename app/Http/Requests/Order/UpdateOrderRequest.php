@@ -10,7 +10,10 @@ class UpdateOrderRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $order = $this->route('order');
+
+        return $order instanceof Order
+            && ($this->user()?->can('update', $order) ?? false);
     }
 
     public function rules(): array

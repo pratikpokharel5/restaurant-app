@@ -51,7 +51,7 @@
         <div class="mt-6">
             <h2 class="text-lg font-bold text-slate-950">Recent Orders</h2>
 
-            <div class="mt-3 overflow-hidden rounded-md border border-slate-200">
+            <div class="mt-3 overflow-x-auto rounded-md border border-slate-200">
                 <table class="w-full min-w-[640px] text-left">
                     <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                         <tr>

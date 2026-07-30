@@ -6,19 +6,19 @@
             'label' => 'Today Orders',
             'value' => number_format($summary['today_orders']),
             'icon' => 'fa-receipt',
-            'href' => route('orders.index'),
+            'href' => route('orders.index', ['order_date' => now()->toDateString()]),
         ],
         [
             'label' => 'Today Revenue',
             'value' => number_format($summary['today_revenue'], 2),
             'icon' => 'fa-sack-dollar',
-            'href' => route('payments.index'),
+            'href' => route('payments.index', ['status' => 1, 'payment_date' => now()->toDateString()]),
         ],
         [
             'label' => 'Unpaid Payments',
             'value' => number_format($summary['unpaid_payments']),
             'icon' => 'fa-circle-exclamation',
-            'href' => route('payments.index'),
+            'href' => route('payments.index', ['status' => 0]),
         ],
         [
             'label' => 'Active Menus',
@@ -40,21 +40,21 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="space-y-6">
-        <section>
+    <div class="min-w-0 space-y-6">
+        <section class="min-w-0">
             <div>
-                <h1 class="text-2xl font-bold text-slate-950">Dashboard</h1>
+                <h1 class="text-xl font-bold text-slate-950 sm:text-2xl">Dashboard</h1>
                 <p class="mt-1 text-sm text-slate-500">A quick operational summary for the current restaurant shift.</p>
             </div>
 
-            <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="mt-4 grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 @foreach ($cards as $card)
                     <a href="{{ $card['href'] }}"
-                        class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200 hover:bg-blue-50/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                        class="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200 hover:bg-blue-50/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <div class="text-sm font-medium text-slate-500">{{ $card['label'] }}</div>
-                                <div class="mt-2 text-2xl font-bold text-slate-950">{{ $card['value'] }}</div>
+                                <div class="mt-2 text-xl font-bold text-slate-950 sm:text-2xl">{{ $card['value'] }}</div>
                             </div>
 
                             <div class="grid size-10 place-items-center rounded-md bg-blue-50 text-blue-700">
@@ -66,19 +66,19 @@
             </div>
         </section>
 
-        <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
-            <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-                <div class="flex items-center justify-between gap-3">
+        <div class="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+            <section class="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h2 class="text-lg font-bold text-slate-950">Recent Orders</h2>
                         <p class="mt-1 text-sm text-slate-500">Latest customer orders across all statuses.</p>
                     </div>
 
-                    <a href="{{ route('orders.index') }}" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
+                    <a href="{{ route('orders.index') }}" class="shrink-0 text-sm text-blue-600 hover:text-blue-800">View all</a>
                 </div>
 
-                <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
-                    <table class="w-full min-w-160 text-left">
+                <div class="mt-4 w-full min-w-0 overflow-x-auto rounded-md border border-slate-200">
+                    <table class="w-full min-w-[44rem] text-left">
                         <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                             <tr>
                                 <th class="px-4 py-3 font-semibold">Order</th>
@@ -115,7 +115,7 @@
                 </div>
             </section>
 
-            <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+            <section class="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <h2 class="text-lg font-bold text-slate-950">Order Status</h2>
                 <p class="mt-1 text-sm text-slate-500">Current order distribution.</p>
 
@@ -141,18 +141,18 @@
             </section>
         </div>
 
-        <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-            <div class="flex items-center justify-between gap-3">
+        <section class="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 class="text-lg font-bold text-slate-950">Recent Payments</h2>
                     <p class="mt-1 text-sm text-slate-500">Latest payment records from orders.</p>
                 </div>
 
-                <a href="{{ route('payments.index') }}" class="text-sm text-blue-600 hover:text-blue-800">View all</a>
+                <a href="{{ route('payments.index') }}" class="shrink-0 text-sm text-blue-600 hover:text-blue-800">View all</a>
             </div>
 
-            <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
-                <table class="w-full min-w-160 text-left">
+            <div class="mt-4 w-full min-w-0 overflow-x-auto rounded-md border border-slate-200">
+                <table class="w-full min-w-[44rem] text-left">
                     <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                         <tr>
                             <th class="px-4 py-3 font-semibold">Customer</th>

@@ -63,7 +63,7 @@
         <div class="mt-5">
             <h2 class="mb-3 text-lg font-bold text-slate-950">Order Items</h2>
 
-            <div class="overflow-hidden rounded-md border border-slate-200">
+            <div class="overflow-x-auto rounded-md border border-slate-200">
                 <table class="w-full min-w-[640px] text-left">
                     <thead class="bg-slate-50 text-xs uppercase text-slate-500">
                         <tr>

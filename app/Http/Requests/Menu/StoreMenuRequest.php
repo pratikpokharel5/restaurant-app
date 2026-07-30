@@ -11,7 +11,7 @@ class StoreMenuRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('create', Menu::class) ?? false;
     }
 
     public function rules(): array

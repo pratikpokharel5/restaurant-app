@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\User\ArchiveUserRequest;
 use App\Http\Requests\User\RestoreUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateStaffPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorizeAdmin();
+        $this->authorize('viewAny', User::class);
 
         $users = User::query()
             ->where('role', User::ROLE_STAFF)
@@ -26,7 +27,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $this->authorizeAdmin();
+        $this->authorize('create', User::class);
 
         return view('users.create');
     }
@@ -40,6 +41,22 @@ class UserController extends Controller
             ->with('message', 'Staff user created successfully.');
     }
 
+    public function show(User $user)
+    {
+        $this->authorize('view', $user);
+
+        return view('users.show', compact('user'));
+    }
+
+    public function updatePassword(UpdateStaffPasswordRequest $request, User $user)
+    {
+        $user->update($request->safe()->only('password'));
+
+        return redirect()
+            ->route('users.show', $user)
+            ->with('message', 'Staff password updated successfully.');
+    }
+
     public function archive(ArchiveUserRequest $request, User $user)
     {
         if (! $user->isArchived()) {
@@ -47,7 +64,7 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('users.index')
+            ->route('users.show', $user)
             ->with('message', 'Staff user archived successfully.');
     }
 
@@ -58,12 +75,7 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('users.index')
+            ->route('users.show', $user)
             ->with('message', 'Staff user restored successfully.');
-    }
-
-    private function authorizeAdmin(): void
-    {
-        abort_unless(auth()->user()?->isAdmin(), 403);
     }
 }

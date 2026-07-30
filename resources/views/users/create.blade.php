@@ -26,8 +26,8 @@
             <div>
                 <x-label for="password">Password</x-label>
 
-                <x-textfield id="password" type="password" name="password" placeholder="Password"
-                    :error="$errors->first('password')" required />
+                <x-textfield id="password" type="password" name="password" placeholder="Password" :error="$errors->first('password')"
+                    required />
             </div>
 
             <div>

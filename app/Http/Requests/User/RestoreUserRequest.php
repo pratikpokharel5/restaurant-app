@@ -11,9 +11,8 @@ class RestoreUserRequest extends FormRequest
     {
         $user = $this->route('user');
 
-        return ($this->user()?->isAdmin() ?? false)
-            && $user instanceof User
-            && $user->role === User::ROLE_STAFF;
+        return $user instanceof User
+            && ($this->user()?->can('restore', $user) ?? false);
     }
 
     public function rules(): array

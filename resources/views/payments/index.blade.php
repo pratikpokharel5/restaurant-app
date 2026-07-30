@@ -10,12 +10,28 @@
         </div>
 
         <x-datatable class="mt-3" search="{{ request('search') }}" search-placeholder="Search customer..." :pagination="$payments">
+            <x-slot:filters>
+                <div class="w-full sm:w-64">
+                    <x-select name="status" default-label="Filter by Status..." value="{{ request('status') }}">
+                        <option value="1" @if (request('status') == '1') selected @endif>Paid</option>
+                        <option value="0" @if (request('status') == '0') selected @endif>Not Paid</option>
+                    </x-select>
+                </div>
+
+                <div class="w-full sm:w-64">
+                    <label for="payment_date" class="sr-only">Filter by Payment Date</label>
+                    <x-textfield id="payment_date" type="date" name="payment_date"
+                        value="{{ request('payment_date') }}" />
+                </div>
+            </x-slot:filters>
+
             <x-slot:header>
                 <th class="px-4 py-3 font-semibold">Customer</th>
                 <th class="px-4 py-3 font-semibold">Order</th>
                 <th class="px-4 py-3 font-semibold">Amount</th>
                 <th class="px-4 py-3 font-semibold">Method</th>
                 <th class="px-4 py-3 font-semibold">Status</th>
+                <th class="px-4 py-3 font-semibold">Payment Date</th>
                 <th class="px-4 py-3 font-semibold">Actions</th>
             </x-slot:header>
 
@@ -35,6 +51,8 @@
                             {{ $payment->status ? 'Paid' : 'Not Paid' }}
                         </span>
                     </td>
+
+                    <td class="px-4 py-4 text-slate-600">{{ $payment->created_at->format('M j, Y g:i A') }}</td>
 
                     <td class="px-4 py-4">
                         <a href="{{ route('orders.edit', $payment->order_id) }}"

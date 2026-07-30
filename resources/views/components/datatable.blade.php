@@ -1,32 +1,33 @@
 @props(['search' => '', 'searchPlaceholder' => 'Search...', 'pagination' => null])
 
 <div {{ $attributes }}>
-    <form method="GET"
-        class="flex flex-col gap-3 rounded-md border border-slate-200 bg-slate-50 p-3 sm:flex-row sm:items-end">
-        <div class="relative w-full sm:max-w-xs">
-            <label for="datatable-search" class="sr-only">{{ $searchPlaceholder }}</label>
-            <input type="text" name="search" id="datatable-search"
-                class="peer w-full rounded-md border border-slate-300 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="{{ $searchPlaceholder }}" value="{{ $search }}" />
+    <form method="GET" class="rounded-md border border-slate-200 bg-slate-50 p-3">
+        <div class="grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-end">
+            <div class="relative w-full lg:max-w-xs">
+                <label for="datatable-search" class="sr-only">{{ $searchPlaceholder }}</label>
+                <input type="text" name="search" id="datatable-search"
+                    class="peer w-full rounded-md border border-slate-300 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="{{ $searchPlaceholder }}" value="{{ $search }}" />
 
-            <div
-                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 peer-focus:text-blue-600">
-                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <div
+                    class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 peer-focus:text-blue-600">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                </div>
             </div>
+
+            @if (isset($filters))
+                {{ $filters }}
+            @endif
         </div>
 
-        @if (isset($filters))
-            {{ $filters }}
-        @endif
-
-        <div class="flex flex-wrap gap-2">
-            <x-button type="submit">
+        <div class="mt-3 grid gap-2 sm:flex sm:flex-wrap">
+            <x-button type="submit" class="w-full sm:w-auto">
                 <i class="fa-solid fa-filter mr-2" aria-hidden="true"></i>
                 Apply Filters
             </x-button>
 
             <x-button as="link" href="{{ request()->url() }}"
-                class="border border-slate-300 bg-white text-slate-700 hover:bg-slate-50">
+                class="w-full border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 sm:w-auto">
                 <i class="fa-solid fa-rotate-left mr-2" aria-hidden="true"></i>
                 Clear Filters
             </x-button>
@@ -35,7 +36,7 @@
 
     <div class="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white">
         <div class="overflow-x-auto">
-            <table class="min-w-180 w-full text-left">
+            <table class="w-full min-w-[52rem] text-left">
                 <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
                         {{ $header }}

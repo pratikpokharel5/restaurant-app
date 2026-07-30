@@ -11,7 +11,10 @@ class UpdateMenuRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $menu = $this->route('menu');
+
+        return $menu instanceof Menu
+            && ($this->user()?->can('update', $menu) ?? false);
     }
 
     public function rules(): array

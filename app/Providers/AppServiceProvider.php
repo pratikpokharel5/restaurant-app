@@ -2,7 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\Category;
+use App\Models\Menu;
+use App\Models\Order;
+use App\Models\User;
+use App\Policies\CategoryPolicy;
+use App\Policies\MenuPolicy;
+use App\Policies\OrderPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Category::class, CategoryPolicy::class);
+        Gate::policy(Menu::class, MenuPolicy::class);
+        Gate::policy(Order::class, OrderPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
+
         Paginator::defaultView('vendor.pagination.tailwind');
         Paginator::defaultSimpleView('vendor.pagination.simple-tailwind');
     }

@@ -6,13 +6,16 @@
         ['name' => 'Orders', 'route' => 'orders.index', 'icon' => 'fa-receipt'],
         ['name' => 'Customers', 'route' => 'customers.index', 'icon' => 'fa-users'],
         ['name' => 'Payments', 'route' => 'payments.index', 'icon' => 'fa-credit-card'],
-        ['name' => 'Users', 'route' => 'users.index', 'icon' => 'fa-user-tie'],
     ];
+
+    if (auth()->user()?->can('viewAny', \App\Models\User::class)) {
+        $navItems[] = ['name' => 'Users', 'route' => 'users.index', 'icon' => 'fa-user-tie'];
+    }
 @endphp
 
-<nav class="border-b border-slate-200 bg-white lg:fixed lg:left-0 lg:top-16 lg:h-[calc(100vh-64px)] lg:w-64 lg:border-b-0 lg:border-r"
+<nav class="w-full max-w-full border-b border-slate-200 bg-white lg:fixed lg:left-0 lg:top-16 lg:h-[calc(100vh-64px)] lg:w-64 lg:border-b-0 lg:border-r"
     aria-label="Primary">
-    <div class="flex gap-1 overflow-x-auto px-4 py-3 lg:flex-col lg:overflow-x-visible lg:p-4">
+    <div class="flex max-w-full gap-1 overflow-x-auto px-4 py-3 lg:flex-col lg:overflow-x-visible lg:p-4">
 
         @foreach ($navItems as $item)
             @php

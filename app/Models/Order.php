@@ -111,6 +111,10 @@ class Order extends Model
         $query->when(
             ($filters['status'] ?? null) && in_array($filters['status'], self::statuses(), true),
             fn ($query) => $query->where('status', $filters['status'])
-        );
+        )
+            ->when(
+                $filters['order_date'] ?? null,
+                fn ($query, $orderDate) => $query->whereDate('created_at', $orderDate)
+            );
     }
 }
